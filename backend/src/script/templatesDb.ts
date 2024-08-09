@@ -1,3 +1,5 @@
+// src/script/schema.ts
+
 const createRolesTable = `
 CREATE TABLE IF NOT EXISTS roles (
   id SERIAL PRIMARY KEY,
@@ -20,8 +22,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_reset_token VARCHAR(255) UNIQUE,
   password_reset_expires_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_email_verified_at (email_verified_at)
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
 
@@ -32,9 +33,9 @@ CREATE TABLE IF NOT EXISTS user_tokens (
   token VARCHAR(255) UNIQUE NOT NULL,
   type VARCHAR(50) NOT NULL,  -- 'verification', 'reset', 'auth'
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  expires_at TIMESTAMP,
-  INDEX idx_user_id_type (user_id, type)
+  expires_at TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS idx_user_id_type ON user_tokens(user_id, type);
 `;
 
 const createPicturesTable = `
@@ -43,9 +44,9 @@ CREATE TABLE IF NOT EXISTS pictures (
   user_id INT REFERENCES users(id),
   picture_path VARCHAR(255) UNIQUE NOT NULL,
   is_profile_picture BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_user_id (user_id)
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS idx_user_id ON pictures(user_id);
 `;
 
 const createUserProfilesTable = `
@@ -59,9 +60,9 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   profile_picture INT REFERENCES pictures(id),
   fame_rating INT DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_user_id (user_id)
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS idx_user_id ON user_profiles(user_id);
 `;
 
 const createTagsTable = `
@@ -75,9 +76,9 @@ const createUserTagsTable = `
 CREATE TABLE IF NOT EXISTS user_tags (
   user_id INT REFERENCES users(id),
   tag_id INT REFERENCES tags(id),
-  PRIMARY KEY (user_id, tag_id),
-  INDEX idx_user_id_tag_id (user_id, tag_id)
+  PRIMARY KEY (user_id, tag_id)
 );
+CREATE INDEX IF NOT EXISTS idx_user_id_tag_id ON user_tags(user_id, tag_id);
 `;
 
 const createUserLikesTable = `
@@ -85,10 +86,10 @@ CREATE TABLE IF NOT EXISTS user_likes (
   liker_id INT REFERENCES users(id),
   liked_id INT REFERENCES users(id),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (liker_id, liked_id),
-  INDEX idx_liker_id (liker_id),
-  INDEX idx_liked_id (liked_id)
+  PRIMARY KEY (liker_id, liked_id)
 );
+CREATE INDEX IF NOT EXISTS idx_liker_id ON user_likes(liker_id);
+CREATE INDEX IF NOT EXISTS idx_liked_id ON user_likes(liked_id);
 `;
 
 const createUserVisitsTable = `
@@ -96,10 +97,10 @@ CREATE TABLE IF NOT EXISTS user_visits (
   visitor_id INT REFERENCES users(id),
   visited_id INT REFERENCES users(id),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (visitor_id, visited_id),
-  INDEX idx_visitor_id (visitor_id),
-  INDEX idx_visited_id (visited_id)
+  PRIMARY KEY (visitor_id, visited_id)
 );
+CREATE INDEX IF NOT EXISTS idx_visitor_id ON user_visits(visitor_id);
+CREATE INDEX IF NOT EXISTS idx_visited_id ON user_visits(visited_id);
 `;
 
 const createMessagesTable = `
@@ -108,10 +109,10 @@ CREATE TABLE IF NOT EXISTS messages (
   sender_id INT REFERENCES users(id),
   receiver_id INT REFERENCES users(id),
   message TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_sender_id (sender_id),
-  INDEX idx_receiver_id (receiver_id)
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS idx_sender_id ON messages(sender_id);
+CREATE INDEX IF NOT EXISTS idx_receiver_id ON messages(receiver_id);
 `;
 
 const createNotificationsTable = `
@@ -120,9 +121,9 @@ CREATE TABLE IF NOT EXISTS notifications (
   user_id INT REFERENCES users(id),
   type VARCHAR(50) NOT NULL,
   is_read BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_user_id (user_id)
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS idx_user_id ON notifications(user_id);
 `;
 
 const createFameRatingsTable = `
@@ -130,9 +131,9 @@ CREATE TABLE IF NOT EXISTS fame_ratings (
   id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(id),
   rating INT DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_user_id (user_id)
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS idx_user_id ON fame_ratings(user_id);
 `;
 
 const createReportsTable = `
@@ -141,10 +142,10 @@ CREATE TABLE IF NOT EXISTS reports (
   reporter_id INT REFERENCES users(id),
   reported_id INT REFERENCES users(id),
   reason TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_reporter_id (reporter_id),
-  INDEX idx_reported_id (reported_id)
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS idx_reporter_id ON reports(reporter_id);
+CREATE INDEX IF NOT EXISTS idx_reported_id ON reports(reported_id);
 `;
 
 const createBlockedUsersTable = `
@@ -152,10 +153,10 @@ CREATE TABLE IF NOT EXISTS blocked_users (
   blocker_id INT REFERENCES users(id),
   blocked_id INT REFERENCES users(id),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (blocker_id, blocked_id),
-  INDEX idx_blocker_id (blocker_id),
-  INDEX idx_blocked_id (blocked_id)
+  PRIMARY KEY (blocker_id, blocked_id)
 );
+CREATE INDEX IF NOT EXISTS idx_blocker_id ON blocked_users(blocker_id);
+CREATE INDEX IF NOT EXISTS idx_blocked_id ON blocked_users(blocked_id);
 `;
 
 const createSessionsTable = `
@@ -163,9 +164,9 @@ CREATE TABLE IF NOT EXISTS sessions (
   id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(id),
   session_token VARCHAR(255) UNIQUE NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_user_id (user_id)
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS idx_user_id ON sessions(user_id);
 `;
 
 const createGeoLocationsTable = `
@@ -175,9 +176,9 @@ CREATE TABLE IF NOT EXISTS geo_locations (
   latitude DECIMAL(9, 6) NOT NULL,
   longitude DECIMAL(9, 6) NOT NULL,
   neighborhood VARCHAR(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_user_id (user_id)
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX IF NOT EXISTS idx_user_id ON geo_locations(user_id);
 `;
 
 const listOfTables = [

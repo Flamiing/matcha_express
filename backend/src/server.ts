@@ -1,27 +1,18 @@
-import express, { Request, Response } from 'express';
+// src/server.ts
+
+import http from 'http';
+import app from './app';
 import initDb from './script/initDb';
 
-const app = express();
-const port = 3000;
+const port = 8000;
 
 const startServer = async () => {
   try {
     await initDb();
-    
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true })); 
 
-    // Use routes
-    // app.use('/api/users', userRoutes);
-    // app.use('/api/auth', authRoutes);
-    // app.use('/api/profile', profileRoutes);
+    const server = http.createServer(app);
 
-    // Root route
-    app.get('/', (req: Request, res: Response) => {
-      res.send('Hello, TypeScript with Express!');
-    });
-
-    app.listen(port, () => {
+    server.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
     });
   } catch (err) {
