@@ -29,11 +29,7 @@ const initDb = async () => {
 		console.log('All tables created successfully');
 	} catch (err) {
 		console.error('Error initializing the database', err);
-	} finally {
-		await db.destroy(); // Close the database connection
 	}
 };
-
-initDb();
 
 export default initDb;

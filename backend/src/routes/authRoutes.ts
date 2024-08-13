@@ -1,20 +1,23 @@
-// src/routes/authRoutes.ts
-
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import {
+	registerHandler,
+	verifyEmailHandler,
+	loginHandler,
+	refreshHandler,
+	logoutHandler,
+	forgotPasswordHandler,
+	resetPasswordHandler,
+} from '../controllers/authControllers';
 
 const authRoutes = Router();
 
-// Placeholder route handlers
-authRoutes.post('/login', (req: Request, res: Response) => {
-  res.send('Login route');
-});
-
-authRoutes.post('/register', (req: Request, res: Response) => {
-  res.send('Register route');
-});
-
-authRoutes.post('/logout', (req: Request, res: Response) => {
-  res.send('Logout route');
-});
+// prefix: /auth
+authRoutes.post('/register', registerHandler);
+authRoutes.get('/email/verify/:code', verifyEmailHandler);
+authRoutes.post('/login', loginHandler);
+authRoutes.get('/refresh', refreshHandler);
+authRoutes.get('/logout', logoutHandler);
+authRoutes.post('/password/forgot', forgotPasswordHandler);
+authRoutes.post('/password/reset', resetPasswordHandler);
 
 export default authRoutes;
