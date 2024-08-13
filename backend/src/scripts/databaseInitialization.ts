@@ -1,7 +1,7 @@
 import db from '../config/databaseConnection';
 import listOfTableCreationFunctions from './createTables';
 
-export const initDb = async () => {
+const initDb = async () => {
     try {
         await db.transaction(async (trx) => {
             for (const createTable of listOfTableCreationFunctions) {
@@ -13,3 +13,5 @@ export const initDb = async () => {
         console.error('Error initializing the database', err);
     }
 };
+
+export default initDb;

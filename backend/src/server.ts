@@ -2,13 +2,17 @@
 
 import http from 'http';
 import app from './app';
-import { initDb } from './scripts/initializeDatababse';
+// Database Initialization
+import initDb from './scripts/databaseInitialization';
+// Cron Jobs
+import initializeCronJobs from './scripts/cronJobs';
 
 const port = 8000;
 
 const startServer = async () => {
     try {
         await initDb();
+        initializeCronJobs();
 
         const server = http.createServer(app);
 

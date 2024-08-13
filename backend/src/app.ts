@@ -26,7 +26,7 @@ app.use(cookieParser()); // Middleware to parse cookies
 
 // Define routes
 app.get('/', (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Hello, TypeScript with Express!' });
+    res.status(200).json({ message: 'Hello, TypeScript with Express!' });
 });
 
 // Use routers for API endpoints
@@ -37,13 +37,13 @@ app.use('/api/profile', profileRoutes);
 // Error Handling Middleware
 // 404 Not Found
 app.use((req: Request, res: Response) => {
-  res.status(404).json({ message: '404: Page not found' });
+    res.status(404).json({ message: '404: Page not found' });
 });
 
 // 500 Internal Server Error
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something broke!' });
+    console.error(err.stack);
+    res.status(500).json({ message: 'Something broke!' });
 });
 
 // Export the app

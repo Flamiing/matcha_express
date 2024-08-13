@@ -11,13 +11,13 @@ import {
 
 const authRoutes = Router();
 
-// prefix: /auth
+// prefix: /api/auth
 authRoutes.post('/register', registerHandler);
-authRoutes.get('/email/verify/:code', verifyEmailHandler);
 authRoutes.post('/login', loginHandler);
-authRoutes.get('/refresh', refreshHandler);
-authRoutes.get('/logout', logoutHandler);
 authRoutes.post('/password/forgot', forgotPasswordHandler);
 authRoutes.post('/password/reset', resetPasswordHandler);
+authRoutes.get('/logout', logoutHandler);
+authRoutes.get('/refresh', refreshHandler);
+authRoutes.get('/email/verify/:code', verifyEmailHandler);
 
 export default authRoutes;
