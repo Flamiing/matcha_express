@@ -26,7 +26,6 @@ app.use(cookieParser()); // Middleware to parse cookies
 
 // Define routes
 app.get('/', (req: Request, res: Response) => {
-  // res.send('Hello, TypeScript with Express!');
   res.status(200).json({ message: 'Hello, TypeScript with Express!' });
 });
 
