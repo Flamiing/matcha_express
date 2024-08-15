@@ -1,4 +1,4 @@
-import { Knex } from 'knex';
+import bcrypt from 'bcrypt';
 import db from '../config/databaseConnection';
 
 const createUsersTable = async (trx: any) => {
@@ -8,10 +8,11 @@ const createUsersTable = async (trx: any) => {
     await db.schema
         .createTable('users', (table) => {
             table.increments('id').primary();
-            table.string('username', 50).unique();
+            table.string('username', 50);
             table.string('email', 100).unique().notNullable();
             table.string('password', 255).notNullable();
             table.boolean('is_verified').defaultTo(false);
+            table.boolean('is_admin').defaultTo(false);
             table.timestamp('email_verified_at');
             table.timestamp('created_at').defaultTo(db.fn.now());
             table.timestamp('updated_at').defaultTo(db.fn.now());
@@ -330,29 +331,6 @@ const createBlockedUsersTable = async (trx: any) => {
         });
 };
 
-const createSessionsTable = async (trx: any) => {
-    if (await db.schema.hasTable('sessions')) {
-        return;
-    }
-
-    await db.schema
-        .createTable('sessions', (table) => {
-            table.increments('id').primary();
-            table
-                .integer('user_id')
-                .references('id')
-                .inTable('users')
-                .onDelete('CASCADE')
-                .onUpdate('CASCADE');
-            table.string('session_token', 255).unique().notNullable();
-            table.timestamp('created_at').defaultTo(db.fn.now());
-        })
-        .transacting(trx)
-        .catch((error) => {
-            console.error('Error creating sessions table:', error);
-        });
-};
-
 const createGeoLocationsTable = async (trx: any) => {
     if (await db.schema.hasTable('geo_locations')) {
         return;
@@ -392,7 +370,6 @@ const listOfTableCreationFunctions = [
     createFameRatingsTable,
     createReportsTable,
     createBlockedUsersTable,
-    createSessionsTable,
     createGeoLocationsTable,
 ];
 

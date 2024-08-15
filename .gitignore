@@ -15,7 +15,6 @@ dist/
 build/
 
 # IDE specific files
-.vscode/
 .idea/
 
 # OS-specific files

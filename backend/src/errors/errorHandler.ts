@@ -6,6 +6,6 @@ export const serviceErrorHandler = (err: any, res: Response) => {
     if (err instanceof ServiceError) {
         return res.status(err.status).json({ message: err.message });
     } else {
-        return res.status(500).json({ message: 'Something broke!' });
+        return res.status(500).json({ message: err.message });
     }
 };

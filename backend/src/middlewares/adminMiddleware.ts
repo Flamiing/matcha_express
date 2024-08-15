@@ -2,11 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { verifyToken } from '../utils/authTokens';
 import UserModel from '../models/user';
-import dotenv from 'dotenv';
 
-dotenv.config();
-
-const authMiddleware = async (
+const adminMiddleware = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -31,10 +28,10 @@ const authMiddleware = async (
                     .status(401)
                     .json({ message: 'Unauthorized: User not found' });
             }
-            if (!user.is_verified) {
+            if (!user.is_admin) {
                 return res
                     .status(401)
-                    .json({ message: 'Unauthorized: User not verified' });
+                    .json({ message: 'Unauthorized: User not an admin' });
             }
             // Attach the user object to the request object
             req.user = user;
@@ -57,4 +54,4 @@ const authMiddleware = async (
     }
 };
 
-export default authMiddleware;
+export default adminMiddleware;

@@ -53,12 +53,15 @@ const UserTokenModel = {
     create: async (
         tokenData: Omit<UserToken, 'id' | 'created_at'>
     ): Promise<UserToken> => {
+        const trx = await db.transaction();
         try {
-            const [token] = await db<UserToken>('user_tokens')
+            const [token] = await trx<UserToken>('user_tokens')
                 .insert({ ...tokenData, created_at: new Date() })
                 .returning('*');
+            await trx.commit();
             return token;
         } catch (error) {
+            await trx.rollback();
             if (error instanceof Error) {
                 console.error('Error creating token:', error.message);
                 throw new Error('Could not create token');
@@ -71,13 +74,16 @@ const UserTokenModel = {
         id: number,
         tokenData: Partial<Omit<UserToken, 'id' | 'created_at' | 'updated_at'>>
     ): Promise<UserToken | undefined> => {
+        const trx = await db.transaction();
         try {
-            const [token] = await db<UserToken>('user_tokens')
+            const [token] = await trx<UserToken>('user_tokens')
                 .where({ id })
                 .update({ ...tokenData, updated_at: new Date() })
                 .returning('*');
+            await trx.commit();
             return token;
         } catch (error) {
+            await trx.rollback();
             if (error instanceof Error) {
                 console.error(
                     `Error updating token with ID ${id}:`,

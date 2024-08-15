@@ -6,6 +6,7 @@ interface User {
     email: string;
     password: string;
     is_verified?: boolean;
+    is_admin?: boolean;
     email_verified_at?: Date | null;
     created_at?: Date;
     updated_at?: Date;
@@ -57,16 +58,19 @@ const UserModel = {
     create: async (
         userData: Omit<User, 'id' | 'created_at' | 'updated_at'>
     ): Promise<User> => {
+        const trx = await db.transaction();
         try {
-            const [user] = await db<User>('users')
+            const [user] = await trx<User>('users')
                 .insert({
                     ...userData,
                     created_at: new Date(),
                     updated_at: new Date(),
                 })
                 .returning('*');
+            await trx.commit();
             return user;
         } catch (error) {
+            await trx.rollback();
             if (error instanceof Error) {
                 console.error('Error creating user:', error.message);
                 throw new Error('Could not create user');
@@ -79,13 +83,16 @@ const UserModel = {
         id: number,
         userData: Partial<Omit<User, 'id' | 'created_at' | 'updated_at'>>
     ): Promise<User | undefined> => {
+        const trx = await db.transaction();
         try {
-            const [user] = await db<User>('users')
+            const [user] = await trx<User>('users')
                 .where({ id })
                 .update({ ...userData, updated_at: new Date() })
                 .returning('*');
+            await trx.commit();
             return user;
         } catch (error) {
+            await trx.rollback();
             if (error instanceof Error) {
                 console.error(
                     `Error updating user with ID ${id}:`,
