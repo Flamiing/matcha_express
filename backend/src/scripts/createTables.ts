@@ -1,4 +1,5 @@
-import bcrypt from 'bcrypt';
+// src/scripts/createTables.ts
+
 import db from '../config/databaseConnection';
 
 const createUsersTable = async (trx: any) => {

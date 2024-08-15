@@ -2,7 +2,7 @@ import cron from 'node-cron';
 import db from '../config/databaseConnection';
 import { parseDuration } from '../utils/dateParsing';
 
-// Function to delete expired tokens
+// Removes all expired tokens from the database daily
 const deleteExpiredTokens = async () => {
     try {
         await db('user_tokens').where('expires_at', '<', new Date()).del();
@@ -12,6 +12,7 @@ const deleteExpiredTokens = async () => {
     }
 };
 
+// Removes all unverified users older than a specified period daily
 const deleteUnverifiedUsers = async () => {
     try {
         await db('users')
