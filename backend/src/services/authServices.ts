@@ -1,6 +1,5 @@
 // src/services/authServices.ts
 
-import db from '../config/databaseConnection';
 import bcrypt from 'bcrypt';
 import {
     getPasswordResetTemplate,
@@ -20,9 +19,7 @@ import { signToken, verifyToken, generateToken } from '../utils/authTokens';
 import { parseDuration } from '../utils/dateParsing';
 import { sendMail } from '../utils/sendMail';
 import { ServiceError } from '../errors/customErrors';
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { parse } from 'path';
 
 dotenv.config();
 

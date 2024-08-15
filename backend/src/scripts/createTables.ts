@@ -11,11 +11,8 @@ const createUsersTable = async (trx: any) => {
             table.string('username', 50).unique();
             table.string('email', 100).unique().notNullable();
             table.string('password', 255).notNullable();
-            table.string('first_name', 50);
-            table.string('last_name', 50);
             table.boolean('is_verified').defaultTo(false);
             table.timestamp('email_verified_at');
-            table.timestamp('password_reset_expires_at');
             table.timestamp('created_at').defaultTo(db.fn.now());
             table.timestamp('updated_at').defaultTo(db.fn.now());
         })
@@ -40,7 +37,8 @@ const createUserTokensTable = async (trx: any) => {
                 .onDelete('CASCADE')
                 .onUpdate('CASCADE');
             table.string('token', 255).unique().notNullable();
-            table.string('type', 50).notNullable(); // 'verification', 'reset', 'auth', 'refresh'
+            // types: 'verification', 'reset', 'auth', 'refresh'
+            table.string('type', 50).notNullable();
             table.timestamp('created_at').defaultTo(db.fn.now());
             table.timestamp('updated_at').defaultTo(db.fn.now());
             table.timestamp('expires_at').defaultTo(db.fn.now());
@@ -87,6 +85,8 @@ const createUserProfilesTable = async (trx: any) => {
                 .inTable('users')
                 .onDelete('CASCADE')
                 .onUpdate('CASCADE');
+            table.string('first_name', 50);
+            table.string('last_name', 50);
             table.string('gender', 20);
             table.string('sexual_preferences', 50);
             table.text('biography');

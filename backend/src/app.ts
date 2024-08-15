@@ -6,7 +6,9 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import helmet from 'helmet';
-// Import CORS options
+import authMiddleware from './middlewares/authMiddleware';
+import limiter from './config/rateLimitConfigure';
+// Import options
 import corsOptions from './config/corsOptions';
 // Routers
 import userRoutes from './routes/userRoutes';
@@ -17,6 +19,7 @@ import profileRoutes from './routes/profileRoutes';
 const app = express();
 
 // Apply middleware
+app.use(limiter); // Apply rate limiting middleware
 app.use(cors(corsOptions)); // Apply CORS middleware with configuration
 app.use(helmet()); // Apply Helmet for security headers
 app.use(morgan('combined')); // Log HTTP requests
@@ -31,8 +34,8 @@ app.get('/', (req: Request, res: Response) => {
 
 // Use routers for API endpoints
 app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/profile', profileRoutes);
+app.use('/api/users', authMiddleware, userRoutes);
+app.use('/api/profile', authMiddleware, profileRoutes);
 
 // Error Handling Middleware
 // 404 Not Found
