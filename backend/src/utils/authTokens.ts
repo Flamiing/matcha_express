@@ -5,10 +5,14 @@ import crypto from 'crypto';
 dotenv.config();
 
 export const signToken = (
-	payload: string | object | Buffer,
-	options?: SignOptions
+    payload: string | object | Buffer,
+    options?: SignOptions
 ) => {
-	return jwt.sign(payload, process.env.JWT_SECRET!, options);
+    const defaultOptions: SignOptions = {
+		// If not provided, default to 15 minutes expiration
+        expiresIn: '15m'
+    };
+    return jwt.sign(payload, process.env.JWT_SECRET!, { ...defaultOptions, ...options });
 };
 
 export const verifyToken = (token: string, options?: VerifyOptions) => {

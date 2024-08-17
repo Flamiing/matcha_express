@@ -10,6 +10,7 @@ import {
     resetUserPassword,
 } from '../services/authServices';
 import { Request, Response } from 'express';
+import { parseDuration } from '../utils/dateParsing';
 import { serviceErrorHandler } from '../errors/errorHandler';
 
 export const registerHandler = async (req: Request, res: Response) => {
@@ -38,33 +39,52 @@ export const loginHandler = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     try {
-        const { accessToken, refreshToken } = await loginUser({
+        const { accessToken, refreshToken, user } = await loginUser({
             email,
             password,
         });
-        res.status(200).json({ accessToken, refreshToken });
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: parseDuration(process.env.REFRESH_TOKEN_EXPIRY || '7d'),
+            sameSite: 'strict',
+        });
+        res.status(200).json({ accessToken, user });
     } catch (err) {
         serviceErrorHandler(err, res);
     }
 };
 
 export const refreshHandler = async (req: Request, res: Response) => {
-    const { refreshToken } = req.body;
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'Unauthorized: No token provided' });
+    }
 
     try {
-        const { accessToken, newRefreshToken } =
+        const { accessToken, newRefreshToken, user } =
             await refreshAccessToken(refreshToken);
-        res.status(200).json({ accessToken, refreshToken: newRefreshToken });
+        res.cookie('refreshToken', newRefreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: parseDuration(process.env.REFRESH_TOKEN_EXPIRY || '7d'),
+            sameSite: 'strict',
+        });
+        res.status(200).json({ accessToken, user });
     } catch (err) {
         serviceErrorHandler(err, res);
     }
 };
 
 export const logoutHandler = async (req: Request, res: Response) => {
-    const { refreshToken } = req.body;
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'Unauthorized: No token provided' });
+    }
 
     try {
         const result = await logoutUser(refreshToken);
+        res.clearCookie('refreshToken');
         res.status(200).json({ message: result.message });
     } catch (err) {
         serviceErrorHandler(err, res);
@@ -95,4 +115,14 @@ export const resetPasswordHandler = async (req: Request, res: Response) => {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
+};
+
+export const getMeHandler = async (req: Request, res: Response) => {
+    // User object is attached to the request object by the auth middleware
+    try {
+        res.status(200).json({ user: req.user });
+    } catch (err) {
+        serviceErrorHandler(err, res);
+    }
+
 };

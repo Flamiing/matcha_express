@@ -143,7 +143,7 @@ export const loginUser = async ({
         ),
     });
     // Return the access token and refresh token
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, user: { id: user.id, email: user.email } };
 };
 
 export const refreshAccessToken = async (refreshToken: string) => {
@@ -182,7 +182,7 @@ export const refreshAccessToken = async (refreshToken: string) => {
         ),
     });
     // Return the new access token and refresh token
-    return { accessToken, newRefreshToken };
+    return { accessToken, newRefreshToken, user: { id: user.id, email: user.email } };
 };
 
 export const logoutUser = async (refreshToken: string) => {

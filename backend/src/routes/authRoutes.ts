@@ -7,7 +7,9 @@ import {
 	logoutHandler,
 	forgotPasswordHandler,
 	resetPasswordHandler,
+	getMeHandler,
 } from '../controllers/authControllers';
+import authMiddleware from '../middlewares/authMiddleware';
 
 const authRoutes = Router();
 
@@ -16,8 +18,9 @@ authRoutes.post('/register', registerHandler);
 authRoutes.post('/login', loginHandler);
 authRoutes.post('/password/forgot', forgotPasswordHandler);
 authRoutes.post('/password/reset', resetPasswordHandler);
+authRoutes.post('/refresh', refreshHandler);
 authRoutes.get('/logout', logoutHandler);
-authRoutes.get('/refresh', refreshHandler);
 authRoutes.get('/email/verify/:code', verifyEmailHandler);
+authRoutes.get('/me', authMiddleware, getMeHandler);
 
 export default authRoutes;
