@@ -27,7 +27,7 @@ app.use(express.json()); // Middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded bodies
 app.use(cookieParser()); // Middleware to parse cookies
 
-// Define routes (landing page we will handle later)
+// (landing page we will handle later)
 app.get('/', (req: Request, res: Response) => {
     res.status(200).json({ message: 'Hello, TypeScript with Express!' });
 });
