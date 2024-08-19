@@ -23,4 +23,6 @@ jobs:
         run: cd ./backend
 
       - name: Run Prettier formater
-        run: npm run format
+        run: |
+          ls -al
+          cat package.json
