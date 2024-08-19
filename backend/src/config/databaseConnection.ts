@@ -6,10 +6,10 @@ dotenv.config();
 process.env;
 
 const db = new Client({
-    host: process.env.POSTGRES_HOST || 'localhost',
-    user: process.env.POSTGRES_USER || 'postgres',
-    password: process.env.POSTGRES_PASSWORD || 'password',
-    database: process.env.POSTGRES_DB || 'postgres',
+    host: process.env.POSTGRES_HOST,
+    user: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DB,
     port: parseInt(process.env.POSTGRES_PORT ?? '5432')
 });
 
