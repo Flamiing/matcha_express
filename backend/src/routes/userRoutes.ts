@@ -21,7 +21,7 @@ userRoutes.delete('/test/:id', deleteUserHandler); // REMOVE ME
 userRoutes.get('/', adminMiddleware, getAllUsersHandler);
 userRoutes.post('/', adminMiddleware, createUserHandler);
 userRoutes.get('/:id', adminMiddleware, getUserByIdHandler);
-userRoutes.patch('/:id', adminMiddleware, updateUserHandler); // Esto deberia de ser PATCH
+userRoutes.patch('/:id', adminMiddleware, updateUserHandler);
 userRoutes.delete('/:id', adminMiddleware, deleteUserHandler);
 
 export default userRoutes;
