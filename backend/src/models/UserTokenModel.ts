@@ -44,7 +44,7 @@ class UserTokenModel extends BaseModel<UserToken> {
         const currentTime = new Date();
         fields.push(...['created_at', 'updated_at']);
         values.push(...[currentTime, currentTime]);
-        return super.update(id, fields, values)
+        return super.update(id, fields, values);
     }
 
     public async update(
@@ -55,8 +55,8 @@ class UserTokenModel extends BaseModel<UserToken> {
         const values = Object.values(data);
         const currentTime = new Date();
         fields.push('updated_at');
-        values.push(currentTime)
-        return super.update(id, fields, values)
+        values.push(currentTime);
+        return super.update(id, fields, values);
     }
 }
 

@@ -53,12 +53,10 @@ export default class BaseModel<T extends {}> {
         }
     }
 
-    public async create(
-        fields: string[],
-        values: string[]
-    ): Promise<T> {
+    public async create(fields: string[], values: string[]): Promise<T> {
         try {
-            const { formatedFields, placeholders } = this.formatFieldsForCreate(fields);
+            const { formatedFields, placeholders } =
+                this.formatFieldsForCreate(fields);
             console.log('FORMATED: ', formatedFields);
             console.log('PLACEHOLDERS: ', placeholders);
             console.log('VALUES: ', values);
@@ -69,8 +67,13 @@ export default class BaseModel<T extends {}> {
             return result.rows as T;
         } catch (error) {
             if (error instanceof Error) {
-                console.error(`Could not create record at '${this.tableName}' table: `, error.message);
-                throw new Error(`Could not create record at '${this.tableName}' table`);
+                console.error(
+                    `Could not create record at '${this.tableName}' table: `,
+                    error.message
+                );
+                throw new Error(
+                    `Could not create record at '${this.tableName}' table`
+                );
             }
             throw new Error('Unknown error occurred');
         }
@@ -142,13 +145,17 @@ export default class BaseModel<T extends {}> {
     }
 
     private formatFieldsForUpdate(raw_fields: string[]): string {
-        const formatedFields = raw_fields.map((item, index) => `${item} = $${index + 1}`).join(', ');
-        return formatedFields
+        const formatedFields = raw_fields
+            .map((item, index) => `${item} = $${index + 1}`)
+            .join(', ');
+        return formatedFields;
     }
 
     private formatFieldsForCreate(raw_fields: string[]): string {
-        const formatedFields = raw_fields.map(item => `${item}`).join(', ');
-        const placeholders = raw_fields.map((_, index) => `$${index + 1}`).join(', ');
-        return { formatedFields, placeholders }
+        const formatedFields = raw_fields.map((item) => `${item}`).join(', ');
+        const placeholders = raw_fields
+            .map((_, index) => `$${index + 1}`)
+            .join(', ');
+        return { formatedFields, placeholders };
     }
 }

@@ -57,7 +57,7 @@ class UserModel extends BaseModel<User> {
         const values = Object.values(data);
         const currentTime = new Date();
         fields.push('updated_at');
-        values.push(currentTime)
+        values.push(currentTime);
         return super.update(id, fields, values);
     }
 }
