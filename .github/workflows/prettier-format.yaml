@@ -16,8 +16,11 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - name: Install Dependencies
-        run: npm install
+      - name: TEST
+        run: ls -al
 
-      - name: Run Prettier formater
-        run: npm run format
+      #- name: Install Dependencies
+      #  run: npm install
+
+      #- name: Run Prettier formater
+      #  run: npm run format
