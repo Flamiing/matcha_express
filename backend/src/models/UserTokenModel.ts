@@ -25,11 +25,11 @@ class UserTokenModel extends BaseModel<UserToken> {
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
-                    `Error fetching record by token from ${this.tableName} table:`,
+                    `Error fetching record by token from '${this.tableName}' table:`,
                     error.message
                 );
                 throw new Error(
-                    `Could not fetch record by token from ${this.tableName} table`
+                    `Could not fetch record by token from '${this.tableName}' table`
                 );
             }
             throw new Error('Unknown error occurred');
@@ -53,6 +53,15 @@ class UserTokenModel extends BaseModel<UserToken> {
             }
             throw new Error('Unknown error occurred');
         }
+    }
+
+    public async update(
+        id: number,
+        data: Partial<Omit<UserToken, 'id' | 'created_at' | 'updated_at'>>
+    ): Promise<T | undefined> {
+        const fields = Object.keys(data) 
+        const values = Object.values(data) 
+        return super.update(id, fields, values)
     }
 }
 

@@ -10,19 +10,6 @@ export default class BaseModel<T extends {}> {
         this.db = db;
     }
 
-    protected async newQuery(
-        text: string,
-        values: string[] | null
-    ): Promise<QueryResult<any>> {
-        // Using this function we can make SQL Injection safe queries to the db.
-        const query = {
-            text: text,
-            values: values,
-        };
-        const result = await this.db.query(query);
-        return result;
-    }
-
     public async getAll(): Promise<T[]> {
         try {
             const result = await this.newQuery(
@@ -33,11 +20,11 @@ export default class BaseModel<T extends {}> {
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
-                    `Error fetching record from ${this.tableName} table:`,
+                    `Error fetching record from '${this.tableName}' table:`,
                     error.message
                 );
                 throw new Error(
-                    `Could not fetch record from ${this.tableName} table`
+                    `Could not fetch record from '${this.tableName}' table`
                 );
             }
             throw new Error('Unknown error occurred');
@@ -54,11 +41,11 @@ export default class BaseModel<T extends {}> {
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
-                    `Error fetching record with ID ${id} from ${this.tableName} table:`,
+                    `Error fetching record with ID ${id} from '${this.tableName}' table:`,
                     error.message
                 );
                 throw new Error(
-                    `Could not fetch record with ID ${id} from ${this.tableName} table`
+                    `Could not fetch record with ID ${id} from '${this.tableName}' table`
                 );
             }
             throw new Error('Unknown error occurred');
@@ -67,30 +54,29 @@ export default class BaseModel<T extends {}> {
 
     public async update(
         id: number,
-        data: Partial<Omit<T, 'id' | 'created_at' | 'updated_at'>>
+        fields: string[],
+        values: string[]
     ): Promise<T | undefined> {
-        //const trx = await db.transaction();
         try {
-            /* const [record] = await trx<T>('users')
-                .where('id', id.toString())
-                .update({ ...data, updated_at: new Date() })
-                .returning('*');
-            await trx.commit();
-            return record; */
+            const formatedFields = this.formatFieldsForUpdate(fields);
+            const lastPos = values.length + 1;
+            values.push(id.toString());
             const currentTime = new Date();
+            console.log('FORMATED: ', formatedFields);
+            console.log('VALUES: ', values);
             const result = await this.newQuery(
-                `UPDATE ${this.tableName} SET  RETURNING *`,
-                [tokenData.user_id, tokenData.token, tokenData.type, currentTime, currentTime]
+                `UPDATE ${this.tableName} SET ${formatedFields} WHERE id=$${lastPos} RETURNING *`,
+                values
             );
             return result.rows as T;
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
-                    `Error updating record with ID ${id} from ${this.tableName} table:`,
+                    `Error updating record with ID ${id} from '${this.tableName}' table:`,
                     error.message
                 );
                 throw new Error(
-                    `Could not update record with ID ${id} from ${this.tableName} table`
+                    `Could not update record with ID ${id} from '${this.tableName}' table`
                 );
             }
             throw new Error('Unknown error occurred');
@@ -107,14 +93,32 @@ export default class BaseModel<T extends {}> {
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
-                    `Error deleting record with ID ${id} from ${this.tableName} table:`,
+                    `Error deleting record with ID ${id} from '${this.tableName}' table:`,
                     error.message
                 );
                 throw new Error(
-                    `Could not delete user with ID ${id} from ${this.tableName} table`
+                    `Could not delete user with ID ${id} from '${this.tableName}' table`
                 );
             }
             throw new Error('Unknown error occurred');
         }
+    }
+
+    protected async newQuery(
+        text: string,
+        values: string[] | null
+    ): Promise<QueryResult<any>> {
+        // Using this function we can make SQL Injection safe queries to the db.
+        const query = {
+            text: text,
+            values: values,
+        };
+        const result = await this.db.query(query);
+        return result;
+    }
+
+    private formatFieldsForUpdate(raw_fields: string[]): string {
+        const fields = raw_fields.map((item, index) => `${item} = $${index + 1}`).join(', ');
+        return fields
     }
 }

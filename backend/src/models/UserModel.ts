@@ -27,11 +27,11 @@ class UserModel extends BaseModel<User> {
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
-                    `Error fetching record with email ${email} from ${this.tableName} table:`,
+                    `Error fetching record with email ${email} from '${this.tableName}' table:`,
                     error.message
                 );
                 throw new Error(
-                    `Could not fetch record with email ${email} from ${this.tableName} table`
+                    `Could not fetch record with email ${email} from '${this.tableName}' table`
                 );
             }
             throw new Error('Unknown error occurred');
@@ -55,6 +55,15 @@ class UserModel extends BaseModel<User> {
             }
             throw new Error('Unknown error occurred');
         }
+    }
+
+    public async update(
+        id: number,
+        data: Partial<Omit<User, 'id' | 'created_at' | 'updated_at'>>
+    ): Promise<T | undefined> {
+        const fields = Object.keys(data) 
+        const values = Object.values(data) 
+        return super.update(id, fields, values)
     }
 }
 
