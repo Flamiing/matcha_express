@@ -16,11 +16,11 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - name: TEST
-        run: ls -al
+      - name: Install Dependencies
+        run: npm install prettier@3.3.3
 
-      #- name: Install Dependencies
-      #  run: npm install
+      - name: Enter Backend folder
+        run: cd ./backend
 
-      #- name: Run Prettier formater
-      #  run: npm run format
+      - name: Run Prettier formater
+        run: npm run format
