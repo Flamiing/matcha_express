@@ -58,7 +58,9 @@ export const loginHandler = async (req: Request, res: Response) => {
 export const refreshHandler = async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
-        return res.status(401).json({ message: 'Unauthorized: No token provided' });
+        return res
+            .status(401)
+            .json({ message: 'Unauthorized: No token provided' });
     }
 
     try {
@@ -79,7 +81,9 @@ export const refreshHandler = async (req: Request, res: Response) => {
 export const logoutHandler = async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
-        return res.status(401).json({ message: 'Unauthorized: No token provided' });
+        return res
+            .status(401)
+            .json({ message: 'Unauthorized: No token provided' });
     }
 
     try {
@@ -124,5 +128,4 @@ export const getMeHandler = async (req: Request, res: Response) => {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-
 };

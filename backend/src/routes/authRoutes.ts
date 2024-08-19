@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import {
-	registerHandler,
-	verifyEmailHandler,
-	loginHandler,
-	refreshHandler,
-	logoutHandler,
-	forgotPasswordHandler,
-	resetPasswordHandler,
-	getMeHandler,
+    registerHandler,
+    verifyEmailHandler,
+    loginHandler,
+    refreshHandler,
+    logoutHandler,
+    forgotPasswordHandler,
+    resetPasswordHandler,
+    getMeHandler,
 } from '../controllers/authControllers';
 import authMiddleware from '../middlewares/authMiddleware';
 

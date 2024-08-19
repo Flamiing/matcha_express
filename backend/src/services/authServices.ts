@@ -13,8 +13,8 @@ import {
     codeValidationSchema,
     tokenValidationSchema,
 } from '../schemas/authSchemas';
-import UserModel from '../models/user';
-import UserTokenModel from '../models/userToken';
+import userModel from '../models/UserModel';
+import UserTokenModel from '../models/UserTokenModel';
 import { signToken, verifyToken, generateToken } from '../utils/authTokens';
 import { parseDuration } from '../utils/dateParsing';
 import { sendMail } from '../utils/sendMail';
@@ -36,14 +36,14 @@ export const createAccount = async ({
         throw new ServiceError(error.message, 400);
     }
     // Search for existing user with the same email
-    const existingUser = await UserModel.findByEmail(email);
+    const existingUser = await userModel.getByEmail(email);
     if (existingUser) {
         throw new ServiceError('User already exists', 409);
     }
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
     // Create a new user
-    const user = await UserModel.create({ email, password: hashedPassword });
+    const user = await userModel.create({ email, password: hashedPassword });
     // Generate a verification token
     const token = generateToken();
     await UserTokenModel.create({
@@ -72,8 +72,8 @@ export const verifyEmail = async (code: string) => {
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the token in the database
-    const token = await UserTokenModel.findByToken(code);
+    // get the token in the database
+    const token = await UserTokenModel.getByToken(code);
     if (!token) {
         throw new ServiceError('Invalid verification code', 400);
     }
@@ -85,8 +85,8 @@ export const verifyEmail = async (code: string) => {
     if (token.type !== 'verification') {
         throw new ServiceError('Invalid verification code', 400);
     }
-    // Find the user associated with the
-    const user = await UserModel.findById(token.user_id);
+    // get the user associated with the
+    const user = await userModel.getById(token.user_id);
     if (!user) {
         throw new ServiceError('User not found', 404);
     }
@@ -94,7 +94,7 @@ export const verifyEmail = async (code: string) => {
         throw new ServiceError('Email already verified', 400);
     }
     // Update the user to set email_verified_at and is_verified to true
-    await UserModel.update(user.id, {
+    await userModel.update(user.id, {
         email_verified_at: new Date(),
         is_verified: true,
     });
@@ -116,8 +116,8 @@ export const loginUser = async ({
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the user by email
-    const user = await UserModel.findByEmail(email);
+    // get the user by email
+    const user = await userModel.getByEmail(email);
     if (!user) {
         throw new ServiceError('Invalid email or password', 400);
     }
@@ -143,7 +143,11 @@ export const loginUser = async ({
         ),
     });
     // Return the access token and refresh token
-    return { accessToken, refreshToken, user: { id: user.id, email: user.email } };
+    return {
+        accessToken,
+        refreshToken,
+        user: { id: user.id, email: user.email },
+    };
 };
 
 export const refreshAccessToken = async (refreshToken: string) => {
@@ -152,8 +156,8 @@ export const refreshAccessToken = async (refreshToken: string) => {
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the refresh token in the database
-    const token = await UserTokenModel.findByToken(refreshToken);
+    // get the refresh token in the database
+    const token = await UserTokenModel.getByToken(refreshToken);
     if (!token) {
         throw new ServiceError('Invalid refresh token', 401);
     }
@@ -163,8 +167,8 @@ export const refreshAccessToken = async (refreshToken: string) => {
     if (token.type !== 'refresh') {
         throw new ServiceError('Invalid refresh token', 401);
     }
-    // Find the user associated with the token
-    const user = await UserModel.findById(token.user_id);
+    // get the user associated with the token
+    const user = await userModel.getById(token.user_id);
     if (!user) {
         throw new ServiceError('User not found', 404);
     }
@@ -182,7 +186,11 @@ export const refreshAccessToken = async (refreshToken: string) => {
         ),
     });
     // Return the new access token and refresh token
-    return { accessToken, newRefreshToken, user: { id: user.id, email: user.email } };
+    return {
+        accessToken,
+        newRefreshToken,
+        user: { id: user.id, email: user.email },
+    };
 };
 
 export const logoutUser = async (refreshToken: string) => {
@@ -191,8 +199,8 @@ export const logoutUser = async (refreshToken: string) => {
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the refresh token in the database
-    const token = await UserTokenModel.findByToken(refreshToken);
+    // get the refresh token in the database
+    const token = await UserTokenModel.getByToken(refreshToken);
     if (!token) {
         throw new ServiceError('Invalid refresh token', 401);
     }
@@ -211,8 +219,8 @@ export const generatePasswordResetToken = async (email: string) => {
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the user by email
-    const user = await UserModel.findByEmail(email);
+    // get the user by email
+    const user = await userModel.getByEmail(email);
     if (!user) {
         throw new ServiceError('User not found', 404);
     }
@@ -247,8 +255,8 @@ export const resetUserPassword = async (
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the token in the database
-    const tokenRecord = await UserTokenModel.findByToken(token);
+    // get the token in the database
+    const tokenRecord = await UserTokenModel.getByToken(token);
     if (!tokenRecord) {
         throw new ServiceError('Invalid or expired token', 400);
     }
@@ -258,14 +266,14 @@ export const resetUserPassword = async (
     if (tokenRecord.type !== 'password_reset') {
         throw new ServiceError('Invalid token', 400);
     }
-    // Find the user associated with the token
-    const user = await UserModel.findById(tokenRecord.user_id);
+    // get the user associated with the token
+    const user = await userModel.getById(tokenRecord.user_id);
     if (!user) {
         throw new ServiceError('User not found', 404);
     }
     // Hash the new password
     const hashedPassword = await bcrypt.hash(password, 10);
-    await UserModel.update(user.id, { password: hashedPassword });
+    await userModel.update(user.id, { password: hashedPassword });
     // Delete the password reset token
     await UserTokenModel.delete(tokenRecord.id);
     // Email the User reporting the password change
