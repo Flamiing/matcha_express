@@ -16,5 +16,8 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - name: Run Prettier formatter
+      - name: Install Dependencies
+        run: npm install prettier@3.3.3
+
+      - name: Run Prettier formater
         run: npm run format
