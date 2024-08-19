@@ -1,5 +1,6 @@
 import { Client, QueryResult } from 'pg';
 import db from '../config/databaseConnection';
+import { raw } from 'express';
 
 export default class BaseModel<T extends {}> {
     protected tableName: string;
@@ -47,6 +48,29 @@ export default class BaseModel<T extends {}> {
                 throw new Error(
                     `Could not fetch record with ID ${id} from '${this.tableName}' table`
                 );
+            }
+            throw new Error('Unknown error occurred');
+        }
+    }
+
+    public async create(
+        fields: string[],
+        values: string[]
+    ): Promise<T> {
+        try {
+            const { formatedFields, placeholders } = this.formatFieldsForCreate(fields);
+            console.log('FORMATED: ', formatedFields);
+            console.log('PLACEHOLDERS: ', placeholders);
+            console.log('VALUES: ', values);
+            const result = await this.newQuery(
+                `INSERT INTO ${this.tableName} (${formatedFields}) VALUES (${placeholders}) RETURNING *`,
+                values
+            );
+            return result.rows as T;
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Could not create record at '${this.tableName}' table: `, error.message);
+                throw new Error(`Could not create record at '${this.tableName}' table`);
             }
             throw new Error('Unknown error occurred');
         }
@@ -118,7 +142,13 @@ export default class BaseModel<T extends {}> {
     }
 
     private formatFieldsForUpdate(raw_fields: string[]): string {
-        const fields = raw_fields.map((item, index) => `${item} = $${index + 1}`).join(', ');
-        return fields
+        const formatedFields = raw_fields.map((item, index) => `${item} = $${index + 1}`).join(', ');
+        return formatedFields
+    }
+
+    private formatFieldsForCreate(raw_fields: string[]): string {
+        const formatedFields = raw_fields.map(item => `${item}`).join(', ');
+        const placeholders = raw_fields.map((_, index) => `$${index + 1}`).join(', ');
+        return { formatedFields, placeholders }
     }
 }

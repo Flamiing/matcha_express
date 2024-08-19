@@ -14,7 +14,7 @@ profileRoutes.get('/:id', (req: Request, res: Response) => {
     res.send(`Get profile with ID: ${profileId}`);
 });
 
-profileRoutes.put('/:id', (req: Request, res: Response) => {
+profileRoutes.patch('/:id', (req: Request, res: Response) => {
     const profileId = req.params.id;
     res.send(`Update profile with ID: ${profileId}`);
 });

@@ -39,28 +39,23 @@ class UserTokenModel extends BaseModel<UserToken> {
     public async create(
         tokenData: Omit<UserToken, 'id' | 'created_at' | 'updated_at'>
     ): Promise<UserToken> {
-        try {
-            const currentTime = new Date();
-            const result = await this.newQuery(
-                `INSERT INTO ${this.tableName} (user_id, token, type, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-                [tokenData.user_id, tokenData.token, tokenData.type, currentTime, currentTime]
-            );
-            return result.rows as UserToken;
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error('Error creating token:', error.message);
-                throw new Error('Could not create token');
-            }
-            throw new Error('Unknown error occurred');
-        }
+        const fields = Object.keys(data);
+        const values = Object.values(data);
+        const currentTime = new Date();
+        fields.push(...['created_at', 'updated_at']);
+        values.push(...[currentTime, currentTime]);
+        return super.update(id, fields, values)
     }
 
     public async update(
         id: number,
         data: Partial<Omit<UserToken, 'id' | 'created_at' | 'updated_at'>>
-    ): Promise<T | undefined> {
-        const fields = Object.keys(data) 
-        const values = Object.values(data) 
+    ): Promise<UserToken | undefined> {
+        const fields = Object.keys(data);
+        const values = Object.values(data);
+        const currentTime = new Date();
+        fields.push('updated_at');
+        values.push(currentTime)
         return super.update(id, fields, values)
     }
 }

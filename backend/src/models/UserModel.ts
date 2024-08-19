@@ -39,31 +39,26 @@ class UserModel extends BaseModel<User> {
     }
 
     public async create(
-        userData: Omit<User, 'id' | 'created_at' | 'updated_at'>
+        data: Omit<User, 'id' | 'created_at' | 'updated_at'>
     ): Promise<User> {
-        try {
-            const currentTime = new Date();
-            const result = await this.newQuery(
-                `INSERT INTO ${this.tableName} (username, email, password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-                [userData.username, userData.email, userData.password, currentTime, currentTime]
-            );
-            return result.rows as User;
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error('Error creating user:', error.message);
-                throw new Error('Could not create user');
-            }
-            throw new Error('Unknown error occurred');
-        }
+        const fields = Object.keys(data);
+        const values = Object.values(data);
+        const currentTime = new Date();
+        fields.push(...['created_at', 'updated_at']);
+        values.push(...[currentTime, currentTime]);
+        return super.create(fields, values);
     }
 
     public async update(
         id: number,
         data: Partial<Omit<User, 'id' | 'created_at' | 'updated_at'>>
-    ): Promise<T | undefined> {
-        const fields = Object.keys(data) 
-        const values = Object.values(data) 
-        return super.update(id, fields, values)
+    ): Promise<User | undefined> {
+        const fields = Object.keys(data);
+        const values = Object.values(data);
+        const currentTime = new Date();
+        fields.push('updated_at');
+        values.push(currentTime)
+        return super.update(id, fields, values);
     }
 }
 
