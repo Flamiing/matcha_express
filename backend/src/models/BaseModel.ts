@@ -1,6 +1,5 @@
 import { Client, QueryResult } from 'pg';
 import db from '../config/databaseConnection';
-import { raw } from 'express';
 
 export default class BaseModel<T extends {}> {
     protected tableName: string;
@@ -32,13 +31,13 @@ export default class BaseModel<T extends {}> {
         }
     }
 
-    public async getById(id: number): Promise<T | undefined> {
+    public async getById(id: number): Promise<T> {
         try {
             const result = await this.newQuery(
                 `SELECT * FROM ${this.tableName} WHERE id=$1`,
                 [id.toString()]
             );
-            return result.rows as T | undefined;
+            return result.rows as T;
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
