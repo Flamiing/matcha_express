@@ -1,4 +1,4 @@
-import db from "../config/databaseConnection";
+import db from '../config/databaseConnection';
 
 export default class BaseModel<T extends {}> {
     protected tableName: string;
@@ -12,8 +12,13 @@ export default class BaseModel<T extends {}> {
             return await db<T>(this.tableName).select('*');
         } catch (error) {
             if (error instanceof Error) {
-                console.error(`Error fetching record from ${this.tableName} table:`, error.message);
-                throw new Error(`Could not fetch record from ${this.tableName} table`);
+                console.error(
+                    `Error fetching record from ${this.tableName} table:`,
+                    error.message
+                );
+                throw new Error(
+                    `Could not fetch record from ${this.tableName} table`
+                );
             }
             throw new Error('Unknown error occurred');
         }
@@ -21,14 +26,18 @@ export default class BaseModel<T extends {}> {
 
     public async findById(id: number): Promise<T | undefined> {
         try {
-            return await db<T>(this.tableName).where('id', id.toString()).first();
+            return await db<T>(this.tableName)
+                .where('id', id.toString())
+                .first();
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
                     `Error fetching record with ID ${id} from ${this.tableName} table:`,
                     error.message
                 );
-                throw new Error(`Could not fetch record with ID ${id} from ${this.tableName} table`);
+                throw new Error(
+                    `Could not fetch record with ID ${id} from ${this.tableName} table`
+                );
             }
             throw new Error('Unknown error occurred');
         }
@@ -53,7 +62,9 @@ export default class BaseModel<T extends {}> {
                     `Error updating record with ID ${id} from ${this.tableName} table:`,
                     error.message
                 );
-                throw new Error(`Could not update record with ID ${id} from ${this.tableName} table`);
+                throw new Error(
+                    `Could not update record with ID ${id} from ${this.tableName} table`
+                );
             }
             throw new Error('Unknown error occurred');
         }
@@ -68,7 +79,9 @@ export default class BaseModel<T extends {}> {
                     `Error deleting record with ID ${id} from ${this.tableName} table:`,
                     error.message
                 );
-                throw new Error(`Could not delete user with ID ${id} from ${this.tableName} table`);
+                throw new Error(
+                    `Could not delete user with ID ${id} from ${this.tableName} table`
+                );
             }
             throw new Error('Unknown error occurred');
         }
