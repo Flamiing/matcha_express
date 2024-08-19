@@ -36,7 +36,7 @@ export const createAccount = async ({
         throw new ServiceError(error.message, 400);
     }
     // Search for existing user with the same email
-    const existingUser = await userModel.findByEmail(email);
+    const existingUser = await userModel.getByEmail(email);
     if (existingUser) {
         throw new ServiceError('User already exists', 409);
     }
@@ -72,8 +72,8 @@ export const verifyEmail = async (code: string) => {
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the token in the database
-    const token = await UserTokenModel.findByToken(code);
+    // get the token in the database
+    const token = await UserTokenModel.getByToken(code);
     if (!token) {
         throw new ServiceError('Invalid verification code', 400);
     }
@@ -85,8 +85,8 @@ export const verifyEmail = async (code: string) => {
     if (token.type !== 'verification') {
         throw new ServiceError('Invalid verification code', 400);
     }
-    // Find the user associated with the
-    const user = await userModel.findById(token.user_id);
+    // get the user associated with the
+    const user = await userModel.getById(token.user_id);
     if (!user) {
         throw new ServiceError('User not found', 404);
     }
@@ -116,8 +116,8 @@ export const loginUser = async ({
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the user by email
-    const user = await userModel.findByEmail(email);
+    // get the user by email
+    const user = await userModel.getByEmail(email);
     if (!user) {
         throw new ServiceError('Invalid email or password', 400);
     }
@@ -156,8 +156,8 @@ export const refreshAccessToken = async (refreshToken: string) => {
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the refresh token in the database
-    const token = await UserTokenModel.findByToken(refreshToken);
+    // get the refresh token in the database
+    const token = await UserTokenModel.getByToken(refreshToken);
     if (!token) {
         throw new ServiceError('Invalid refresh token', 401);
     }
@@ -167,8 +167,8 @@ export const refreshAccessToken = async (refreshToken: string) => {
     if (token.type !== 'refresh') {
         throw new ServiceError('Invalid refresh token', 401);
     }
-    // Find the user associated with the token
-    const user = await userModel.findById(token.user_id);
+    // get the user associated with the token
+    const user = await userModel.getById(token.user_id);
     if (!user) {
         throw new ServiceError('User not found', 404);
     }
@@ -199,8 +199,8 @@ export const logoutUser = async (refreshToken: string) => {
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the refresh token in the database
-    const token = await UserTokenModel.findByToken(refreshToken);
+    // get the refresh token in the database
+    const token = await UserTokenModel.getByToken(refreshToken);
     if (!token) {
         throw new ServiceError('Invalid refresh token', 401);
     }
@@ -219,8 +219,8 @@ export const generatePasswordResetToken = async (email: string) => {
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the user by email
-    const user = await userModel.findByEmail(email);
+    // get the user by email
+    const user = await userModel.getByEmail(email);
     if (!user) {
         throw new ServiceError('User not found', 404);
     }
@@ -255,8 +255,8 @@ export const resetUserPassword = async (
     if (error) {
         throw new ServiceError(error.message, 400);
     }
-    // Find the token in the database
-    const tokenRecord = await UserTokenModel.findByToken(token);
+    // get the token in the database
+    const tokenRecord = await UserTokenModel.getByToken(token);
     if (!tokenRecord) {
         throw new ServiceError('Invalid or expired token', 400);
     }
@@ -266,8 +266,8 @@ export const resetUserPassword = async (
     if (tokenRecord.type !== 'password_reset') {
         throw new ServiceError('Invalid token', 400);
     }
-    // Find the user associated with the token
-    const user = await userModel.findById(tokenRecord.user_id);
+    // get the user associated with the token
+    const user = await userModel.getById(tokenRecord.user_id);
     if (!user) {
         throw new ServiceError('User not found', 404);
     }

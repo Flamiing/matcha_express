@@ -1,4 +1,3 @@
-import db from '../config/databaseConnection';
 import BaseModel from './BaseModel';
 
 interface UserToken {
@@ -16,9 +15,13 @@ class UserTokenModel extends BaseModel<UserToken> {
         super('user_tokens');
     }
 
-    public async findByToken(token: string): Promise<UserToken | undefined> {
+    public async getByToken(token: string): Promise<UserToken | undefined> {
         try {
-            return await db<UserToken>(this.tableName).where({ token }).first();
+            const result = await this.newQuery(
+                `SELECT * FROM ${this.tableName} WHERE token=$1`,
+                [token]
+            );
+            return result.rows as UserToken | undefined;
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
@@ -34,17 +37,16 @@ class UserTokenModel extends BaseModel<UserToken> {
     }
 
     public async create(
-        tokenData: Omit<UserToken, 'id' | 'created_at'>
+        tokenData: Omit<UserToken, 'id' | 'created_at' | 'updated_at'>
     ): Promise<UserToken> {
-        const trx = await db.transaction();
         try {
-            const [token] = await trx<UserToken>(this.tableName)
-                .insert({ ...tokenData, created_at: new Date() })
-                .returning('*');
-            await trx.commit();
-            return token;
+            const currentTime = new Date();
+            const result = await this.newQuery(
+                `INSERT INTO ${this.tableName} (user_id, token, type, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+                [tokenData.user_id, tokenData.token, tokenData.type, currentTime, currentTime]
+            );
+            return result.rows as UserToken;
         } catch (error) {
-            await trx.rollback();
             if (error instanceof Error) {
                 console.error('Error creating token:', error.message);
                 throw new Error('Could not create token');

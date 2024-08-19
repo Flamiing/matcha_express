@@ -1,4 +1,3 @@
-import db from '../config/databaseConnection';
 import BaseModel from './BaseModel';
 
 interface User {
@@ -18,9 +17,13 @@ class UserModel extends BaseModel<User> {
         super('users');
     }
 
-    public async findByEmail(email: string): Promise<User | undefined> {
+    public async getByEmail(email: string): Promise<User | undefined> {
         try {
-            return await db<User>(this.tableName).where({ email }).first();
+            const result = await this.newQuery(
+                `SELECT * FROM ${this.tableName} WHERE email=$1`,
+                [email]
+            );
+            return result.rows as User | undefined;
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
@@ -38,19 +41,14 @@ class UserModel extends BaseModel<User> {
     public async create(
         userData: Omit<User, 'id' | 'created_at' | 'updated_at'>
     ): Promise<User> {
-        const trx = await db.transaction();
         try {
-            const [user] = await trx<User>(this.tableName)
-                .insert({
-                    ...userData,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                })
-                .returning('*');
-            await trx.commit();
-            return user;
+            const currentTime = new Date();
+            const result = await this.newQuery(
+                `INSERT INTO ${this.tableName} (username, email, password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+                [userData.username, userData.email, userData.password, currentTime, currentTime]
+            );
+            return result.rows as User;
         } catch (error) {
-            await trx.rollback();
             if (error instanceof Error) {
                 console.error('Error creating user:', error.message);
                 throw new Error('Could not create user');

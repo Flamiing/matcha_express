@@ -25,7 +25,7 @@ const authMiddleware = async (
         const decoded = verifyToken(token);
 
         if (typeof decoded === 'object' && 'id' in decoded) {
-            const user = await userModel.findById(decoded.id);
+            const user = await userModel.getById(decoded.id);
             if (!user) {
                 return res
                     .status(401)

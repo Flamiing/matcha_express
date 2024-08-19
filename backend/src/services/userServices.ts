@@ -13,7 +13,7 @@ interface UserRequest {
 }
 
 export const getAllUsers = async () => {
-    return await userModel.findAll();
+    return await userModel.getAll();
 };
 
 export const createUser = async (data: UserRequest) => {
@@ -21,7 +21,7 @@ export const createUser = async (data: UserRequest) => {
 };
 
 export const getUserById = async (id: number) => {
-    return await userModel.findById(id);
+    return await userModel.getById(id);
 };
 
 export const updateUser = async (id: number, data: UserRequest) => {
