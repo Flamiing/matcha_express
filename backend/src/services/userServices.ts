@@ -1,6 +1,5 @@
-import UserModel from '../models/user';
-import UserTokenModel from '../models/userToken';
-
+import userModel from '../models/UserModel';
+import UserTokenModel from '../models/UserTokenModel';
 
 interface UserRequest {
     username?: string;
@@ -13,23 +12,22 @@ interface UserRequest {
     updated_at?: Date;
 }
 
-
 export const getAllUsers = async () => {
-    return await UserModel.findAll();
-}
+    return await userModel.findAll();
+};
 
 export const createUser = async (data: UserRequest) => {
-    return await UserModel.create(data);
-}
+    return await userModel.create(data);
+};
 
 export const getUserById = async (id: number) => {
-    return await UserModel.findById(id);
-}
+    return await userModel.findById(id);
+};
 
 export const updateUser = async (id: number, data: UserRequest) => {
-    return await UserModel.update(id, data);
-}
+    return await userModel.update(id, data);
+};
 
 export const deleteUser = async (id: number) => {
-    return await UserModel.delete(id);
-}
+    return await userModel.delete(id);
+};

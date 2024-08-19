@@ -7,7 +7,7 @@ const createUsersTable = async (trx: any) => {
         return;
     }
     await db.schema
-        .createTable('users', (table) => { 
+        .createTable('users', (table) => {
             table.increments('id').primary();
             table.string('username', 50);
             table.string('email', 100).unique().notNullable();

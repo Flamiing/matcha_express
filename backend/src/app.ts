@@ -35,6 +35,7 @@ app.get('/', (req: Request, res: Response) => {
 // Use routers for API endpoints
 app.use('/api/auth', authRoutes);
 app.use('/api/users', authMiddleware, userRoutes);
+app.use('/api/test', userRoutes); // REMOVE ME
 app.use('/api/profile', authMiddleware, profileRoutes);
 
 // Error Handling Middleware

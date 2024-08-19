@@ -1,0 +1,20 @@
+name: Prettier Format
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+
+      - name: Run Prettier formatter
+        run: npm run format
