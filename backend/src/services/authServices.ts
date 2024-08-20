@@ -102,7 +102,7 @@ export async function verifyEmail(code: string) {
     await UserTokenModel.delete(token.id);
 
     return { message: 'Email verified successfully' };
-};
+}
 
 export async function loginUser({
     email,
@@ -149,7 +149,7 @@ export async function loginUser({
         refreshToken,
         user: { id: user.id, email: user.email },
     };
-};
+}
 
 export async function refreshAccessToken(refreshToken: string) {
     // Validate the refresh token
@@ -192,7 +192,7 @@ export async function refreshAccessToken(refreshToken: string) {
         newRefreshToken,
         user: { id: user.id, email: user.email },
     };
-};
+}
 
 export async function logoutUser(refreshToken: string) {
     // Validate the refresh token
@@ -212,7 +212,7 @@ export async function logoutUser(refreshToken: string) {
     // Delete the refresh token (Frontend removes access/refresh tokens from local storage)
     await UserTokenModel.delete(token.id);
     return { message: 'Logged out' };
-};
+}
 
 export async function generatePasswordResetToken(email: string) {
     // Validate email format
@@ -244,7 +244,7 @@ export async function generatePasswordResetToken(email: string) {
     });
 
     return { message: 'Password reset link sent' };
-};
+}
 
 export async function resetUserPassword(
     email: string,
@@ -284,4 +284,4 @@ export async function resetUserPassword(
     });
 
     return { message: 'Password reset successful' };
-};
+}
