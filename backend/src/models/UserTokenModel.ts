@@ -36,17 +36,6 @@ class UserTokenModel extends BaseModel<UserToken> {
         }
     }
 
-    public async create(
-        tokenData: Omit<UserToken, 'id' | 'created_at' | 'updated_at'>
-    ): Promise<UserToken> {
-        const fields = Object.keys(data);
-        const values = Object.values(data);
-        const currentTime = new Date();
-        fields.push(...['created_at', 'updated_at']);
-        values.push(...[currentTime, currentTime]);
-        return super.update(id, fields, values);
-    }
-
     public async update(
         id: number,
         data: Partial<Omit<UserToken, 'id' | 'created_at' | 'updated_at'>>

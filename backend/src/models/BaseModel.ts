@@ -52,8 +52,12 @@ export default class BaseModel<T extends {}> {
         }
     }
 
-    public async create(fields: string[], values: string[]): Promise<T> {
+    public async create(
+        data: Omit<T, 'id' | 'created_at' | 'updated_at'>
+    ): Promise<T> {
         try {
+            const fields = Object.keys(data);
+            const values = Object.values(data);
             const { formatedFields, placeholders } =
                 this.formatFieldsForCreate(fields);
             console.log('FORMATED: ', formatedFields);
