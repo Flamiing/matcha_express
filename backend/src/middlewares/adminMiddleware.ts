@@ -3,11 +3,11 @@ import { TokenExpiredError } from 'jsonwebtoken';
 import { verifyToken } from '../utils/authTokens';
 import userModel from '../models/UserModel';
 
-const adminMiddleware = async (
+async function adminMiddleware(
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+) {
     // Extract token from Authorization header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

@@ -6,11 +6,11 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const authMiddleware = async (
+async function authMiddleware(
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+) {
     // Extract token from Authorization header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
