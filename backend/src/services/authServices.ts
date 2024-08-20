@@ -66,7 +66,7 @@ export async function createAccount({
     return { user: userWithoutPassword };
 }
 
-export const verifyEmail = async (code: string) => {
+export async function verifyEmail(code: string) {
     // Validate the verification code
     const { error } = codeValidationSchema.validate({ code });
     if (error) {
@@ -104,13 +104,13 @@ export const verifyEmail = async (code: string) => {
     return { message: 'Email verified successfully' };
 };
 
-export const loginUser = async ({
+export async function loginUser({
     email,
     password,
 }: {
     email: string;
     password: string;
-}) => {
+}) {
     // Validate email and password format
     const { error } = emailPasswordSchema.validate({ email, password });
     if (error) {
@@ -151,7 +151,7 @@ export const loginUser = async ({
     };
 };
 
-export const refreshAccessToken = async (refreshToken: string) => {
+export async function refreshAccessToken(refreshToken: string) {
     // Validate the refresh token
     const { error } = tokenValidationSchema.validate({ token: refreshToken });
     if (error) {
@@ -194,7 +194,7 @@ export const refreshAccessToken = async (refreshToken: string) => {
     };
 };
 
-export const logoutUser = async (refreshToken: string) => {
+export async function logoutUser(refreshToken: string) {
     // Validate the refresh token
     const { error } = tokenValidationSchema.validate({ token: refreshToken });
     if (error) {
@@ -214,7 +214,7 @@ export const logoutUser = async (refreshToken: string) => {
     return { message: 'Logged out' };
 };
 
-export const generatePasswordResetToken = async (email: string) => {
+export async function generatePasswordResetToken(email: string) {
     // Validate email format
     const { error } = emailSchema.validate({ email });
     if (error) {
@@ -246,11 +246,11 @@ export const generatePasswordResetToken = async (email: string) => {
     return { message: 'Password reset link sent' };
 };
 
-export const resetUserPassword = async (
+export async function resetUserPassword(
     email: string,
     token: string,
     password: string
-) => {
+) {
     // Validate email, token, and password format
     const { error } = newPasswordSchema.validate({ password });
     if (error) {
