@@ -1,14 +1,19 @@
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    username TEXT,
+    username TEXT UNIQUE NOT NULL,
+    first_name TEXT,
+    last_name TEXT,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
+    gender TEXT,
+    sexual_preferences TEXT,
+    biography TEXT,
+    gps_location TEXT,
+    fame_rating INTEGER DEFAULT 0,
     is_verified BOOLEAN DEFAULT FALSE,
     is_admin BOOLEAN DEFAULT FALSE,
-    email_verified_at TIMESTAMP,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 -- Create user_tokens table
@@ -23,28 +28,12 @@ CREATE TABLE IF NOT EXISTS user_tokens (
 );
 
 -- Create pictures table
-CREATE TABLE IF NOT EXISTS pictures (
+CREATE TABLE IF NOT EXISTS images (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    picture_path TEXT UNIQUE NOT NULL,
+    image BYTEA,
     is_profile_picture BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
-);
-
--- Create user_profiles table
-CREATE TABLE IF NOT EXISTS user_profiles (
-    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    first_name TEXT,
-    last_name TEXT,
-    gender TEXT,
-    sexual_preferences TEXT,
-    biography TEXT,
-    gps_location TEXT,
-    profile_picture BIGINT REFERENCES pictures(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    fame_rating INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
 );
 
 -- Create tags table
