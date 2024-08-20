@@ -23,7 +23,7 @@ class UserModel extends BaseModel<User> {
                 `SELECT * FROM ${this.tableName} WHERE email=$1`,
                 [email]
             );
-            return result.rows as User | undefined;
+            return result.rows[0] as User | undefined;
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
