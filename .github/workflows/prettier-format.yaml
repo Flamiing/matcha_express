@@ -33,5 +33,5 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am "Prittier formating"
+          git commit -am "Prittier formating" || true
           git push origin HEAD:${{ steps.extract_branch.outputs.branch }}
