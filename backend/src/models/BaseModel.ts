@@ -93,7 +93,7 @@ export default class BaseModel<T extends {}> {
                 `UPDATE ${this.tableName} SET ${formatedFields} WHERE id=$${lastPos} RETURNING *`,
                 values
             );
-            return result.rows[0] as T;
+            return result.rows[0] as T | undefined;
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
@@ -108,7 +108,7 @@ export default class BaseModel<T extends {}> {
         }
     }
 
-    public async delete(id: number): Promise<number> {
+    public async delete(id: number): Promise<number | null> {
         try {
             const result = await this.newQuery(
                 `DELETE FROM ${this.tableName} WHERE id=$1`,
@@ -131,7 +131,7 @@ export default class BaseModel<T extends {}> {
 
     protected async newQuery(
         text: string,
-        values: string[] | null
+        values: string[] | undefined
     ): Promise<QueryResult<any>> {
         // Using this function we can make SQL Injection safe queries to the db.
         const query = {

@@ -12,22 +12,22 @@ interface UserRequest {
     updated_at?: Date;
 }
 
-export const getAllUsers = async () => {
+export async function getAllUsers() {
     return await userModel.getAll();
 };
 
-export const createUser = async (data: UserRequest) => {
+export async function createUser(data: UserRequest) {
     return await userModel.create(data);
 };
 
-export const getUserById = async (id: number) => {
+export async function getUserById(id: number) {
     return await userModel.getById(id);
 };
 
-export const updateUser = async (id: number, data: UserRequest) => {
+export async function updateUser(id: number, data: UserRequest) {
     return await userModel.update(id, data);
 };
 
-export const deleteUser = async (id: number) => {
+export async function deleteUser(id: number) {
     return await userModel.delete(id);
 };
