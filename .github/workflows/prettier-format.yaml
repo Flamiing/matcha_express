@@ -12,7 +12,9 @@ jobs:
 
     container:
       image: node:20-alpine
-      options: --workdir /github/workspace
+
+    env:
+      GIT_DISCOVERY_ACROSS_FILESYSTEM: 1
 
     steps:
       - name: Checkout this repo
