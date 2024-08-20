@@ -14,20 +14,20 @@ interface UserRequest {
 
 export async function getAllUsers() {
     return await userModel.getAll();
-};
+}
 
 export async function createUser(data: UserRequest) {
     return await userModel.create(data);
-};
+}
 
 export async function getUserById(id: number) {
     return await userModel.getById(id);
-};
+}
 
 export async function updateUser(id: number, data: UserRequest) {
     return await userModel.update(id, data);
-};
+}
 
 export async function deleteUser(id: number) {
     return await userModel.delete(id);
-};
+}
