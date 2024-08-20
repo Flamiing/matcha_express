@@ -33,5 +33,10 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am "Prittier formating" || true
-          git push origin HEAD:${{ steps.extract_branch.outputs.branch }}
+          git add .
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+          else
+            git commit -m "Prittier formating" || true
+            git push origin HEAD:${{ steps.extract_branch.outputs.branch }}
+          fi
