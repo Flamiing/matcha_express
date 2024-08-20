@@ -60,9 +60,6 @@ export default class BaseModel<T extends {}> {
             const values = Object.values(data);
             const { formatedFields, placeholders } =
                 this.formatFieldsForCreate(fields);
-            console.log('FORMATED: ', formatedFields);
-            console.log('PLACEHOLDERS: ', placeholders);
-            console.log('VALUES: ', values);
             const result = await this.newQuery(
                 `INSERT INTO ${this.tableName} (${formatedFields}) VALUES (${placeholders}) RETURNING *`,
                 values
@@ -92,8 +89,6 @@ export default class BaseModel<T extends {}> {
             const lastPos = values.length + 1;
             values.push(id.toString());
             const currentTime = new Date();
-            console.log('FORMATED: ', formatedFields);
-            console.log('VALUES: ', values);
             const result = await this.newQuery(
                 `UPDATE ${this.tableName} SET ${formatedFields} WHERE id=$${lastPos} RETURNING *`,
                 values

@@ -11,7 +11,7 @@ const port: number = 8000;
 
 const startServer = async () => {
     try {
-        //await initDb();
+        await initDb();
         //initializeCronJobs();
 
         const server: Server = http.createServer(app);
