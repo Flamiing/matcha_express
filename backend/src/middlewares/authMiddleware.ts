@@ -6,11 +6,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-async function authMiddleware(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+async function authMiddleware(req: Request, res: Response, next: NextFunction) {
     // Extract token from Authorization header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -55,6 +51,6 @@ async function authMiddleware(
             .status(401)
             .json({ message: 'Unauthorized: Invalid or expired token' });
     }
-};
+}
 
 export default authMiddleware;

@@ -52,6 +52,6 @@ async function adminMiddleware(
             .status(401)
             .json({ message: 'Unauthorized: Invalid or expired token' });
     }
-};
+}
 
 export default adminMiddleware;
