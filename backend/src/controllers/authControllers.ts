@@ -22,7 +22,7 @@ export async function registerHandler(req: Request, res: Response) {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
 export async function verifyEmailHandler(req: Request, res: Response) {
     const { code } = req.params;
@@ -33,7 +33,7 @@ export async function verifyEmailHandler(req: Request, res: Response) {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
 export async function loginHandler(req: Request, res: Response) {
     const { email, password } = req.body;
@@ -53,7 +53,7 @@ export async function loginHandler(req: Request, res: Response) {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
 export async function refreshHandler(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
@@ -76,7 +76,7 @@ export async function refreshHandler(req: Request, res: Response) {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
 export async function logoutHandler(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
@@ -93,7 +93,7 @@ export async function logoutHandler(req: Request, res: Response) {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
 export async function forgotPasswordHandler(req: Request, res: Response) {
     const { email } = req.body;
@@ -106,7 +106,7 @@ export async function forgotPasswordHandler(req: Request, res: Response) {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
 export async function resetPasswordHandler(req: Request, res: Response) {
     const { email, token, password } = req.body;
@@ -119,7 +119,7 @@ export async function resetPasswordHandler(req: Request, res: Response) {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
 export async function getMeHandler(req: Request, res: Response) {
     // User object is attached to the request object by the auth middleware
@@ -128,4 +128,4 @@ export async function getMeHandler(req: Request, res: Response) {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}

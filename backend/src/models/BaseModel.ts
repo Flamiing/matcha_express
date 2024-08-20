@@ -58,7 +58,8 @@ export default class BaseModel<T extends {}> {
         try {
             const fields = Object.keys(data);
             const values = Object.values(data);
-            const { formatedFields, placeholders } = this.formatFieldsForCreate(fields);
+            const { formatedFields, placeholders } =
+                this.formatFieldsForCreate(fields);
             const result = await this.newQuery(
                 `INSERT INTO ${this.tableName} (${formatedFields}) VALUES (${placeholders}) RETURNING *`,
                 values
@@ -148,7 +149,10 @@ export default class BaseModel<T extends {}> {
         return formatedFields;
     }
 
-    private formatFieldsForCreate(raw_fields: string[]): { formatedFields: string, placeholders: string } {
+    private formatFieldsForCreate(raw_fields: string[]): {
+        formatedFields: string;
+        placeholders: string;
+    } {
         const formatedFields = raw_fields.map((item) => `${item}`).join(', ');
         const placeholders = raw_fields
             .map((_, index) => `$${index + 1}`)

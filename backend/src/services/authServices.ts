@@ -64,7 +64,7 @@ export async function createAccount({
     // Return the user object without the password
     const userWithoutPassword = { ...user, password: undefined };
     return { user: userWithoutPassword };
-};
+}
 
 export const verifyEmail = async (code: string) => {
     // Validate the verification code
@@ -121,7 +121,7 @@ export const loginUser = async ({
     if (!user) {
         throw new ServiceError('Invalid email or password', 400);
     }
-    console.log('USER: ', user)
+    console.log('USER: ', user);
     // Compare the password
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
