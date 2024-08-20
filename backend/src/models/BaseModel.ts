@@ -19,7 +19,10 @@ export default class BaseModel<T extends {}> {
             return result.rows as T[];
         } catch (error) {
             if (error instanceof Error) {
-                console.error(`Error fetching record from '${this.tableName}' table:`,error.message);
+                console.error(
+                    `Error fetching record from '${this.tableName}' table:`,
+                    error.message
+                );
                 throw new Error(
                     `Could not fetch record from '${this.tableName}' table`
                 );
