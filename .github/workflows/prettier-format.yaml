@@ -16,9 +16,6 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - name: Install Git
-        run: apk add --no-cache git
-
       - name: Install Dependencies - Backend
         working-directory: ./backend
         run: npm install
