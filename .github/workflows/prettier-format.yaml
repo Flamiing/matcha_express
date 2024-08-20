@@ -10,11 +10,18 @@ jobs:
   PrettierFormat:
     runs-on: ubuntu-latest
 
+    container:
+      image: node:20-alpine
+      options: --workdir /github/workspace
+
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v4
         with:
           fetch-depth: '0'
+
+      - name: Install Git
+        run: apk add --no-cache git
 
       - name: Install Dependencies - Backend
         working-directory: ./backend
