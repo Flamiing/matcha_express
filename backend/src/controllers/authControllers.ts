@@ -13,7 +13,7 @@ import { Request, Response } from 'express';
 import { parseDuration } from '../utils/dateParsing';
 import { serviceErrorHandler } from '../errors/errorHandler';
 
-export const registerHandler = async (req: Request, res: Response) => {
+export async function registerHandler(req: Request, res: Response) {
     const { email, password } = req.body;
 
     try {
@@ -22,9 +22,9 @@ export const registerHandler = async (req: Request, res: Response) => {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
-export const verifyEmailHandler = async (req: Request, res: Response) => {
+export async function verifyEmailHandler(req: Request, res: Response) {
     const { code } = req.params;
 
     try {
@@ -33,9 +33,9 @@ export const verifyEmailHandler = async (req: Request, res: Response) => {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
-export const loginHandler = async (req: Request, res: Response) => {
+export async function loginHandler(req: Request, res: Response) {
     const { email, password } = req.body;
 
     try {
@@ -53,9 +53,9 @@ export const loginHandler = async (req: Request, res: Response) => {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
-export const refreshHandler = async (req: Request, res: Response) => {
+export async function refreshHandler(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
         return res
@@ -76,9 +76,9 @@ export const refreshHandler = async (req: Request, res: Response) => {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
-export const logoutHandler = async (req: Request, res: Response) => {
+export async function logoutHandler(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
         return res
@@ -93,9 +93,9 @@ export const logoutHandler = async (req: Request, res: Response) => {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
-export const forgotPasswordHandler = async (req: Request, res: Response) => {
+export async function forgotPasswordHandler(req: Request, res: Response) {
     const { email } = req.body;
 
     try {
@@ -106,9 +106,9 @@ export const forgotPasswordHandler = async (req: Request, res: Response) => {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
-export const resetPasswordHandler = async (req: Request, res: Response) => {
+export async function resetPasswordHandler(req: Request, res: Response) {
     const { email, token, password } = req.body;
 
     try {
@@ -119,13 +119,13 @@ export const resetPasswordHandler = async (req: Request, res: Response) => {
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}
 
-export const getMeHandler = async (req: Request, res: Response) => {
+export async function getMeHandler(req: Request, res: Response) {
     // User object is attached to the request object by the auth middleware
     try {
         res.status(200).json({ user: req.user });
     } catch (err) {
         serviceErrorHandler(err, res);
     }
-};
+}

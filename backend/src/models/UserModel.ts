@@ -23,7 +23,7 @@ class UserModel extends BaseModel<User> {
                 `SELECT * FROM ${this.tableName} WHERE email=$1`,
                 [email]
             );
-            return result.rows as User | undefined;
+            return result.rows[0] as User | undefined;
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
@@ -38,26 +38,12 @@ class UserModel extends BaseModel<User> {
         }
     }
 
-    public async create(
-        data: Omit<User, 'id' | 'created_at' | 'updated_at'>
-    ): Promise<User> {
-        const fields = Object.keys(data);
-        const values = Object.values(data);
-        const currentTime = new Date();
-        fields.push(...['created_at', 'updated_at']);
-        values.push(...[currentTime, currentTime]);
-        return super.create(fields, values);
-    }
-
     public async update(
         id: number,
         data: Partial<Omit<User, 'id' | 'created_at' | 'updated_at'>>
     ): Promise<User | undefined> {
         const fields = Object.keys(data);
-        const values = Object.values(data);
-        const currentTime = new Date();
-        fields.push('updated_at');
-        values.push(currentTime);
+        const values = Object.values(data) as string[];
         return super.update(id, fields, values);
     }
 }

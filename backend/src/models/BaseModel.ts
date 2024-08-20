@@ -37,7 +37,7 @@ export default class BaseModel<T extends {}> {
                 `SELECT * FROM ${this.tableName} WHERE id=$1`,
                 [id.toString()]
             );
-            return result.rows as T;
+            return result.rows[0] as T;
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
@@ -52,18 +52,19 @@ export default class BaseModel<T extends {}> {
         }
     }
 
-    public async create(fields: string[], values: string[]): Promise<T> {
+    public async create(
+        data: Omit<T, 'id' | 'created_at' | 'updated_at'>
+    ): Promise<T> {
         try {
+            const fields = Object.keys(data);
+            const values = Object.values(data) as string[];
             const { formatedFields, placeholders } =
                 this.formatFieldsForCreate(fields);
-            console.log('FORMATED: ', formatedFields);
-            console.log('PLACEHOLDERS: ', placeholders);
-            console.log('VALUES: ', values);
             const result = await this.newQuery(
                 `INSERT INTO ${this.tableName} (${formatedFields}) VALUES (${placeholders}) RETURNING *`,
                 values
             );
-            return result.rows as T;
+            return result.rows[0] as T;
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
@@ -88,13 +89,11 @@ export default class BaseModel<T extends {}> {
             const lastPos = values.length + 1;
             values.push(id.toString());
             const currentTime = new Date();
-            console.log('FORMATED: ', formatedFields);
-            console.log('VALUES: ', values);
             const result = await this.newQuery(
                 `UPDATE ${this.tableName} SET ${formatedFields} WHERE id=$${lastPos} RETURNING *`,
                 values
             );
-            return result.rows as T;
+            return result.rows[0] as T | undefined;
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
@@ -109,7 +108,7 @@ export default class BaseModel<T extends {}> {
         }
     }
 
-    public async delete(id: number): Promise<number> {
+    public async delete(id: number): Promise<number | null> {
         try {
             const result = await this.newQuery(
                 `DELETE FROM ${this.tableName} WHERE id=$1`,
@@ -132,7 +131,7 @@ export default class BaseModel<T extends {}> {
 
     protected async newQuery(
         text: string,
-        values: string[] | null
+        values: string[] | undefined
     ): Promise<QueryResult<any>> {
         // Using this function we can make SQL Injection safe queries to the db.
         const query = {
@@ -150,7 +149,10 @@ export default class BaseModel<T extends {}> {
         return formatedFields;
     }
 
-    private formatFieldsForCreate(raw_fields: string[]): string {
+    private formatFieldsForCreate(raw_fields: string[]): {
+        formatedFields: string;
+        placeholders: string;
+    } {
         const formatedFields = raw_fields.map((item) => `${item}`).join(', ');
         const placeholders = raw_fields
             .map((_, index) => `$${index + 1}`)

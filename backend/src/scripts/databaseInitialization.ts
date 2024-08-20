@@ -1,20 +1,10 @@
-import db from '../config/databaseConnection';
-import listOfTableCreationFunctions from './createTables';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
+import userModel from '../models/UserModel';
 
 dotenv.config();
 
 const addAdminSuperUser = async () => {
-    if (!(await db.schema.hasTable('users'))) {
-        return;
-    }
-    const user = await db('users').where('username', 'admin').first();
-    if (user) {
-        console.log('Superuser admin already exists');
-        return;
-    }
-
     const hashedPassword = await bcrypt.hash(
         `${process.env.ADMIN_PASSWORD}`,
         10
@@ -23,13 +13,13 @@ const addAdminSuperUser = async () => {
         username: 'admin',
         email: process.env.ADMIN_EMAIL,
         password: hashedPassword,
+        first_name: 'admin',
+        last_name: 'admin',
         is_verified: true,
         is_admin: true,
-        created_at: db.fn.now(),
-        updated_at: db.fn.now(),
     };
     try {
-        await db('users').insert(superUser).returning('id');
+        await userModel.create(superUser);
         console.log('Superuser admin created successfully');
     } catch (error) {
         if (error instanceof Error) {
@@ -42,14 +32,7 @@ const addAdminSuperUser = async () => {
 
 const initDb = async () => {
     try {
-        await db.transaction(async (trx) => {
-            for (const createTable of listOfTableCreationFunctions) {
-                await createTable(trx);
-            }
-        });
-
         await addAdminSuperUser();
-
         console.log('All tables created successfully');
     } catch (err) {
         console.error('Error initializing the database', err);
