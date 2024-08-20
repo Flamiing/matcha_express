@@ -23,13 +23,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const createAccount = async ({
+export async function createAccount({
     email,
     password,
 }: {
     email: string;
     password: string;
-}) => {
+}) {
     // Validate email and password format
     const { error } = emailPasswordSchema.validate({ email, password });
     if (error) {
@@ -121,6 +121,7 @@ export const loginUser = async ({
     if (!user) {
         throw new ServiceError('Invalid email or password', 400);
     }
+    console.log('USER: ', user)
     // Compare the password
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
