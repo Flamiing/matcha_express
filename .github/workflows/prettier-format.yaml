@@ -29,10 +29,4 @@ jobs:
       - name: Run Prettier - Backend
         working-directory: ./backend
         run: |
-          git config --global --add safe.directory $GITHUB_WORKSPACE
-          FILES=$(git diff --name-only --diff-filter=d origin/${{ github.base_ref }} | tr ' ' '\n' | grep '^backend/.*\.ts$' || true)
-          if [ -n "$FILES" ]; then
-            npm run format $FILES
-          else
-            echo "No TypeScripts files to format."
-          fi
+          npm run format $FILES
