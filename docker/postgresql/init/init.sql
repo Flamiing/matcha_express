@@ -27,13 +27,12 @@ CREATE TABLE IF NOT EXISTS user_tokens (
     expires_at TIMESTAMP DEFAULT NOW()
 );
 
--- Create pictures table
+-- Create images table
 CREATE TABLE IF NOT EXISTS images (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     image BYTEA,
     is_profile_picture BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT NOW()
 );
 
 -- Create tags table
@@ -53,7 +52,6 @@ CREATE TABLE IF NOT EXISTS user_tags (
 CREATE TABLE IF NOT EXISTS user_likes (
     liker_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     liked_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    created_at TIMESTAMP DEFAULT NOW(),
     PRIMARY KEY (liker_id, liked_id)
 );
 
@@ -61,7 +59,7 @@ CREATE TABLE IF NOT EXISTS user_likes (
 CREATE TABLE IF NOT EXISTS user_visits (
     visitor_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     visited_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    created_at TIMESTAMP DEFAULT NOW(),
+    date TIMESTAMP DEFAULT NOW(),
     PRIMARY KEY (visitor_id, visited_id)
 );
 
@@ -71,7 +69,7 @@ CREATE TABLE IF NOT EXISTS messages (
     sender_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     receiver_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     message TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
+    date TIMESTAMP DEFAULT NOW()
 );
 
 -- Create notifications table
@@ -80,7 +78,7 @@ CREATE TABLE IF NOT EXISTS notifications (
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     type TEXT NOT NULL,
     is_read BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT NOW()
+    date TIMESTAMP DEFAULT NOW()
 );
 
 -- Create fame_ratings table
@@ -88,7 +86,6 @@ CREATE TABLE IF NOT EXISTS fame_ratings (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     rating INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW()
 );
 
 -- Create reports table
@@ -97,14 +94,13 @@ CREATE TABLE IF NOT EXISTS reports (
     reporter_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     reported_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     reason TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
+    date TIMESTAMP DEFAULT NOW()
 );
 
 -- Create blocked_users table
 CREATE TABLE IF NOT EXISTS blocked_users (
     blocker_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     blocked_id BIGINT REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    created_at TIMESTAMP DEFAULT NOW(),
     PRIMARY KEY (blocker_id, blocked_id)
 );
 
