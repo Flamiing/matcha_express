@@ -57,7 +57,7 @@ export default class BaseModel<T extends {}> {
     ): Promise<T> {
         try {
             const fields = Object.keys(data);
-            const values = Object.values(data);
+            const values = Object.values(data) as string[];
             const { formatedFields, placeholders } =
                 this.formatFieldsForCreate(fields);
             const result = await this.newQuery(

@@ -21,7 +21,7 @@ class UserTokenModel extends BaseModel<UserToken> {
                 `SELECT * FROM ${this.tableName} WHERE token=$1`,
                 [token]
             );
-            return result.rows as UserToken | undefined;
+            return result.rows[0] as UserToken | undefined;
         } catch (error) {
             if (error instanceof Error) {
                 console.error(
@@ -41,10 +41,10 @@ class UserTokenModel extends BaseModel<UserToken> {
         data: Partial<Omit<UserToken, 'id' | 'created_at' | 'updated_at'>>
     ): Promise<UserToken | undefined> {
         const fields = Object.keys(data);
-        const values = Object.values(data);
+        const values = Object.values(data) as string[];
         const currentTime = new Date();
         fields.push('updated_at');
-        values.push(currentTime);
+        values.push(currentTime.toString());
         return super.update(id, fields, values);
     }
 }

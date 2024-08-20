@@ -43,7 +43,7 @@ class UserModel extends BaseModel<User> {
         data: Partial<Omit<User, 'id' | 'created_at' | 'updated_at'>>
     ): Promise<User | undefined> {
         const fields = Object.keys(data);
-        const values = Object.values(data);
+        const values = Object.values(data) as string[];
         return super.update(id, fields, values);
     }
 }
