@@ -10,15 +10,27 @@ jobs:
   format:
     runs-on: ubuntu-latest
 
+    container:
+      image: node:20
+      options: --user node
+
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v4
         with:
           fetch-depth: '0'
 
-      - name: Install and run Prettier formater
+      - name: Install Dependencies - Backend
+        working-directory: ./backend
+        run: npm install
+
+      - name: Run Prettier - Backend
+        working-directory: ./backend
         run: |
-          cd ./backend
-          ls -al
-          npm install
-          npm run format
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          FILES=$(git diff --name-only --diff-filter=d origin/${{ github.base_ref }} | tr ' ' '\n' | grep '^backend/.*\.ts$' || true)
+          if [ -n "$FILES" ]; then
+            npm run format $FILES
+          else
+            echo "No TypeScripts files to format."
+          fi
