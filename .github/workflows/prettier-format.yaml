@@ -7,18 +7,31 @@ on:
       - synchronize
 
 jobs:
-  format:
+  PrettierFormat:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout this repo
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: '0'
 
-      - name: Install and run Prettier formater
+      - name: Extract Branch Name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Install Dependencies - Backend
+        working-directory: ./backend
+        run: npm install
+
+      - name: Run Prettier - Backend
+        working-directory: ./backend
         run: |
-          cd ./backend
-          ls -al
-          npm install
           npm run format
+      
+      - name: Pushing Changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'flamiing@users.noreply.github.com'
+          git commit -am "Prittier formating"
+          git push origin HEAD:${{ steps.extract_branch.outputs.branch }}
