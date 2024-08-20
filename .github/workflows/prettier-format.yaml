@@ -11,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: node:20
-      options: --user node
+      image: node:20-alpine
 
     steps:
       - name: Checkout this repo
