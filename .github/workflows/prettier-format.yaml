@@ -10,25 +10,15 @@ jobs:
   PrettierFormat:
     runs-on: ubuntu-latest
 
-    container:
-      image: node:20-alpine
-
-    env:
-      GIT_DISCOVERY_ACROSS_FILESYSTEM: 1
-
     steps:
-      - name: Checkout this repo
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: '0'
 
-      - name: Extract branch name
-        shell: bash
+      - name: Extract Branch Name
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
-
-      - name: Install Git
-        run: apk add --no-cache git
 
       - name: Install Dependencies - Backend
         working-directory: ./backend
