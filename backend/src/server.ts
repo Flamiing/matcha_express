@@ -6,6 +6,8 @@ import app from './app';
 import initDb from './scripts/databaseInitialization';
 // Cron Jobs
 import initializeCronJobs from './scripts/cronJobs';
+// Socket.io
+import { initializeWebSocketServer } from './websockets/initializeWebSocketServer';
 
 const port: number = 8000;
 
@@ -15,6 +17,7 @@ const startServer = async () => {
         initializeCronJobs();
 
         const server: Server = http.createServer(app);
+        const io = initializeWebSocketServer(server);
 
         server.listen(port, () => {
             console.log(`Server is running on http://localhost:${port}`);

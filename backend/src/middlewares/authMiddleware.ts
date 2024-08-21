@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { verifyToken } from '../utils/authTokens';
-import userModel from '../models/UserModel';
+import UserModel from '../models/user';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -25,7 +25,7 @@ const authMiddleware = async (
         const decoded = verifyToken(token);
 
         if (typeof decoded === 'object' && 'id' in decoded) {
-            const user = await userModel.getById(decoded.id);
+            const user = await UserModel.findById(decoded.id);
             if (!user) {
                 return res
                     .status(401)
